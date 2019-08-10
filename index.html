@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>fly bird</title>
+    <style>
+        body {
+            background-color: #2A2A2A
+        }
+
+        canvas {
+            display: block;
+            border: 1px solid #313131;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+        }
+
+        img {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="cvs" width="400" height="400"></canvas>
+    <script type="module">
+        import util from "./js/util.js";
+        import start from './js/gameStart.js'
+        import GameScene from "./js/gameScene.js";
+        import OverScene from './js/overScene.js'
+        var cvs = document.getElementById('cvs');
+        var ctx = cvs.getContext('2d');
+        let imgArr = {
+            bird: './img/bird.png',
+            land: './img/land.png',
+            pipeDown: './img/pipeDown.png',
+            pipeUp: './img/pipeUp.png',
+            sky: './img/sky.png'
+        }
+
+        util.load(imgArr, function (imgObj) {
+            cvs.width = imgObj.sky.width;
+            cvs.height = imgObj.sky.height;
+
+            var isRun = false;
+            start(ctx, function () {
+                isRun = true;
+                (function run() {
+                    gameScene.draw();
+                    if (isRun) {
+                        requestAnimationFrame(run);
+                    }
+                }());
+            }).draw();
+            var gameScene = new GameScene(ctx, imgObj);
+
+            var overScene = new OverScene(ctx);
+            gameScene.addListener(function () {
+                isRun = false;
+                overScene.draw();
+            });
+
+        });
+    </script>
+</body>
+
+</html>
